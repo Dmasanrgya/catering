@@ -14,8 +14,11 @@
                         </div>
                     @endif
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 211f47f9a7ff97b659abe2a9c0feb4467c4d3179
                     {{ __('You are logged in!') }}
                 </div>
 

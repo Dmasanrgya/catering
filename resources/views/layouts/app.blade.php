@@ -25,6 +25,22 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
+<<<<<<< HEAD
+=======
+                @auth
+
+                    <a href="{{ route('menus.index') }}" class="{{ request()->routeIs('menus.index') ? 'active' : '' }}">
+                        <i class="fas fa-list"></i> Menu
+                    </a>
+                @endauth
+                
+                @auth
+                    <a href="{{ route('customers.index') }}"
+                        class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                        <i class="fas fa-list"></i> Customer
+                    </a>
+                @endauth
+>>>>>>> 211f47f9a7ff97b659abe2a9c0feb4467c4d3179
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
