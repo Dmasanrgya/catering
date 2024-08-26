@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu; // Pastikan ini sesuai dengan model yang Anda gunakan
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MenuController extends Controller
 {
@@ -22,18 +23,40 @@ class MenuController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        // Aturan validasi dan pesan kesalahan
+        $rules = [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('menus', 'name') // Pastikan nama unik di tabel menus
+            ],
+            'description' => 'nullable|string|max:255',
+        ];
 
-        // Menyimpan menu baru
-        Menu::create($request->all());
+        $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'name.string' => 'Nama harus berupa teks.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+            'name.unique' => 'Nama menu sudah ada.',
+            'description.nullable' => 'Deskripsi tidak wajib diisi.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'description.max' => 'Deskripsi maksimal 255 karakter.',
+        ];
+
+        // Validasi input
+        $validatedData = $request->validate($rules, $messages);
+
+        // Set nilai default untuk description jika tidak diisi
+        $validatedData['description'] = $validatedData['description'] ?? '-';
+
+        // Menyimpan menu baru dengan data yang sudah divalidasi
+        Menu::create($validatedData);
 
         // Mengarahkan kembali dengan pesan sukses
-        return redirect()->route('menus.index')->with('success', 'Menu created successfully.');
+        return redirect()->route('menus.index')->with('success', 'Menu berhasil ditambahkan.');
     }
+
 
     public function edit(Menu $menu)
     {
@@ -43,25 +66,41 @@ class MenuController extends Controller
 
     public function update(Request $request, Menu $menu)
     {
-        // Validasi input
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $rules = [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('menus', 'name')->ignore($menu->id) // Memastikan nama unik, kecuali untuk menu ini
+            ],
+            'description' => 'nullable|string|max:255',
+        ];
 
-        // Memperbarui menu
-        $menu->update($request->all());
+        $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'name.string' => 'Nama harus berupa teks.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+            'name.unique' => 'Nama menu sudah ada.',
+            'description.nullable' => 'Deskripsi tidak wajib diisi.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'description.max' => 'Deskripsi maksimal 255 karakter.',
+        ];
+
+        // Validasi input
+        $validatedData = $request->validate($rules, $messages);
+
+        // Memperbarui menu dengan data yang sudah divalidasi
+        $menu->update($validatedData);
 
         // Mengarahkan kembali dengan pesan sukses
-        return redirect()->route('menus.index')->with('success', 'Menu updated successfully.');
+        return redirect()->route('menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
-
     public function destroy(Menu $menu)
     {
         // Menghapus menu
         $menu->delete();
 
         // Mengarahkan kembali dengan pesan sukses
-        return redirect()->route('menus.index')->with('success', 'Menu deleted successfully.');
+        return redirect()->route('menus.index')->with('success', 'Menu deleted sucses.');
     }
 }
