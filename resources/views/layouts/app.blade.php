@@ -33,6 +33,13 @@
                         <i class="fas fa-list"></i> Menu
                     </a>
                 @endauth
+                
+                @auth
+                    <a href="{{ route('customers.index') }}"
+                        class="{{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                        <i class="fas fa-list"></i> Customer
+                    </a>
+                @endauth
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
